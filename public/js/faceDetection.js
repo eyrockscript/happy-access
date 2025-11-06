@@ -26,17 +26,41 @@ class FaceDetectionService {
         }
     }
 
-    async detectFace(videoElement) {
+    async detectFace(videoElement, withExpressions = false) {
         if (!this.modelsLoaded) {
             throw new Error('Los modelos no están cargados');
         }
 
-        const detection = await faceapi
+        let detection = faceapi
             .detectSingleFace(videoElement, new faceapi.TinyFaceDetectorOptions())
             .withFaceLandmarks()
             .withFaceDescriptor();
 
-        return detection;
+        if (withExpressions) {
+            detection = detection.withFaceExpressions();
+        }
+
+        return await detection;
+    }
+
+    async detectFaceWithExpression(videoElement) {
+        return await this.detectFace(videoElement, true);
+    }
+
+    isSmiling(detection, threshold = 0.7) {
+        if (!detection || !detection.expressions) {
+            return false;
+        }
+
+        const happyScore = detection.expressions.happy;
+        return happyScore > threshold;
+    }
+
+    getSmileScore(detection) {
+        if (!detection || !detection.expressions) {
+            return 0;
+        }
+        return detection.expressions.happy;
     }
 
     async detectAllFaces(videoElement) {
@@ -52,7 +76,7 @@ class FaceDetectionService {
         return detections;
     }
 
-    drawDetection(canvas, detection, text = '') {
+    drawDetection(canvas, detection, text = '', showSmileInfo = false) {
         const displaySize = {
             width: canvas.width,
             height: canvas.height
@@ -68,12 +92,27 @@ class FaceDetectionService {
         faceapi.draw.drawDetections(canvas, resizedDetection);
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
 
-        // Agregar texto si se proporciona
-        if (text && detection.detection) {
+        if (detection.detection) {
             const box = detection.detection.box;
-            ctx.fillStyle = '#6366f1';
-            ctx.font = 'bold 20px Arial';
-            ctx.fillText(text, box.x, box.y - 10);
+            let yOffset = box.y - 10;
+
+            // Agregar texto si se proporciona
+            if (text) {
+                ctx.fillStyle = '#6366f1';
+                ctx.font = 'bold 20px Arial';
+                ctx.fillText(text, box.x, yOffset);
+                yOffset -= 25;
+            }
+
+            // Mostrar información de sonrisa si está disponible
+            if (showSmileInfo && detection.expressions) {
+                const smileScore = (detection.expressions.happy * 100).toFixed(0);
+                const isSmiling = this.isSmiling(detection);
+
+                ctx.fillStyle = isSmiling ? '#22c55e' : '#f59e0b';
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText(`${isSmiling ? '😊' : '😐'} ${smileScore}%`, box.x, yOffset);
+            }
         }
     }
 

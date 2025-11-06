@@ -20,6 +20,31 @@ if (!fs.existsSync(USERS_FILE)) {
     fs.writeFileSync(USERS_FILE, JSON.stringify([]));
 }
 
+// Función para calcular distancia euclidiana entre descriptores faciales
+function euclideanDistance(descriptor1, descriptor2) {
+    if (!descriptor1 || !descriptor2 || descriptor1.length !== descriptor2.length) {
+        return Infinity;
+    }
+
+    let sum = 0;
+    for (let i = 0; i < descriptor1.length; i++) {
+        const diff = descriptor1[i] - descriptor2[i];
+        sum += diff * diff;
+    }
+    return Math.sqrt(sum);
+}
+
+// Verificar si un rostro ya está registrado
+function isFaceDuplicate(newDescriptor, existingUsers, threshold = 0.6) {
+    for (const user of existingUsers) {
+        const distance = euclideanDistance(newDescriptor, user.descriptor);
+        if (distance < threshold) {
+            return { isDuplicate: true, existingUser: user.username, distance };
+        }
+    }
+    return { isDuplicate: false };
+}
+
 // Endpoint para registrar un nuevo usuario
 app.post('/api/register', (req, res) => {
     try {
@@ -31,9 +56,19 @@ app.post('/api/register', (req, res) => {
 
         const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
 
-        // Verificar si el usuario ya existe
+        // Verificar si el usuario ya existe (por nombre)
         if (users.find(u => u.username === username)) {
             return res.status(400).json({ error: 'El usuario ya existe' });
+        }
+
+        // Verificar si el rostro ya está registrado
+        const duplicateCheck = isFaceDuplicate(descriptor, users, 0.6);
+        if (duplicateCheck.isDuplicate) {
+            return res.status(400).json({
+                error: `Este rostro ya está registrado con el usuario "${duplicateCheck.existingUser}"`,
+                duplicate: true,
+                existingUser: duplicateCheck.existingUser
+            });
         }
 
         // Agregar nuevo usuario

@@ -169,8 +169,30 @@ async function startRegister() {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     try {
-        // Detectar rostro
-        const detection = await faceDetectionService.detectFace(video);
+        // Detectar rostro con expresiones
+        showStatus('status-register', '😊 ¡Sonríe para la cámara!', 'info');
+
+        let detection = null;
+        let attempts = 0;
+        const maxAttempts = 30; // 30 intentos = ~6 segundos
+
+        // Intentar detectar una sonrisa
+        while (attempts < maxAttempts) {
+            detection = await faceDetectionService.detectFaceWithExpression(video);
+
+            if (detection) {
+                // Dibujar detección con información de sonrisa
+                faceDetectionService.drawDetection(canvas, detection, username, true);
+
+                if (faceDetectionService.isSmiling(detection, 0.7)) {
+                    showStatus('status-register', '✅ ¡Sonrisa detectada! Guardando...', 'success');
+                    break;
+                }
+            }
+
+            attempts++;
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
 
         if (!detection) {
             showStatus('status-register', '❌ No se detectó ningún rostro. Intenta de nuevo.', 'error');
@@ -179,10 +201,12 @@ async function startRegister() {
             return;
         }
 
-        // Dibujar detección
-        faceDetectionService.drawDetection(canvas, detection, username);
-
-        showStatus('status-register', '✅ Rostro detectado. Guardando...', 'success');
+        if (!faceDetectionService.isSmiling(detection, 0.7)) {
+            showStatus('status-register', '❌ No detectamos una sonrisa. ¡Sonríe e intenta de nuevo!', 'warning');
+            btnStart.disabled = false;
+            stopVideoStream();
+            return;
+        }
 
         // Guardar usuario
         const response = await fetch('/api/register', {
@@ -272,11 +296,40 @@ async function startLogin() {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     try {
-        // Detectar rostro
-        const detection = await faceDetectionService.detectFace(video);
+        // Detectar rostro con expresiones
+        showStatus('status-login', '😊 ¡Sonríe para autenticarte!', 'info');
+
+        let detection = null;
+        let attempts = 0;
+        const maxAttempts = 30; // 30 intentos = ~6 segundos
+
+        // Intentar detectar una sonrisa
+        while (attempts < maxAttempts) {
+            detection = await faceDetectionService.detectFaceWithExpression(video);
+
+            if (detection) {
+                // Dibujar detección con información de sonrisa
+                faceDetectionService.drawDetection(canvas, detection, '', true);
+
+                if (faceDetectionService.isSmiling(detection, 0.7)) {
+                    showStatus('status-login', '✅ ¡Sonrisa detectada! Verificando...', 'success');
+                    break;
+                }
+            }
+
+            attempts++;
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
 
         if (!detection) {
             showStatus('status-login', '❌ No se detectó ningún rostro. Intenta de nuevo.', 'error');
+            btnStart.disabled = false;
+            stopVideoStream();
+            return;
+        }
+
+        if (!faceDetectionService.isSmiling(detection, 0.7)) {
+            showStatus('status-login', '❌ No detectamos una sonrisa. ¡Sonríe e intenta de nuevo!', 'warning');
             btnStart.disabled = false;
             stopVideoStream();
             return;

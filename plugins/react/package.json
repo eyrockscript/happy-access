@@ -1,0 +1,21 @@
+{
+  "name": "happy-access-react",
+  "version": "1.0.0",
+  "description": "Componente React para autenticación facial con detección de sonrisa",
+  "main": "HappyAccessAuth.jsx",
+  "type": "module",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "face-api.js": "^0.22.2"
+  },
+  "keywords": [
+    "react",
+    "face-recognition",
+    "authentication",
+    "smile-detection",
+    "biometric"
+  ],
+  "author": "eyrockscript",
+  "license": "ISC"
+}
