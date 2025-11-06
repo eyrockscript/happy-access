@@ -23,6 +23,16 @@ function showScreen(screenId) {
     // Detener stream de video si existe
     stopVideoStream();
 
+    // Limpiar todos los canvas
+    clearAllCanvas();
+
+    // Resetear estados de botones
+    resetButtons();
+
+    // Limpiar mensajes de estado
+    clearStatus('status-register');
+    clearStatus('status-login');
+
     // Ocultar todas las pantallas
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
@@ -30,6 +40,27 @@ function showScreen(screenId) {
 
     // Mostrar pantalla seleccionada
     document.getElementById(screenId).classList.add('active');
+}
+
+// Limpiar todos los canvas
+function clearAllCanvas() {
+    const canvases = ['overlay-register', 'overlay-login'];
+    canvases.forEach(canvasId => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    });
+}
+
+// Resetear estados de botones
+function resetButtons() {
+    const btnRegister = document.getElementById('btn-start-register');
+    const btnLogin = document.getElementById('btn-start-login');
+
+    if (btnRegister) btnRegister.disabled = false;
+    if (btnLogin) btnLogin.disabled = false;
 }
 
 // Funciones de carga
@@ -84,6 +115,17 @@ function stopVideoStream() {
         videoStream.getTracks().forEach(track => track.stop());
         videoStream = null;
     }
+
+    // Limpiar srcObject de los videos
+    const videoRegister = document.getElementById('video-register');
+    const videoLogin = document.getElementById('video-login');
+
+    if (videoRegister && videoRegister.srcObject) {
+        videoRegister.srcObject = null;
+    }
+    if (videoLogin && videoLogin.srcObject) {
+        videoLogin.srcObject = null;
+    }
 }
 
 // === REGISTRO DE USUARIO ===
@@ -102,6 +144,10 @@ async function startRegister() {
 
     btnStart.disabled = true;
     clearStatus('status-register');
+
+    // Limpiar canvas antes de empezar
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Iniciar video
     showStatus('status-register', '📹 Iniciando cámara...', 'info');
@@ -129,6 +175,7 @@ async function startRegister() {
         if (!detection) {
             showStatus('status-register', '❌ No se detectó ningún rostro. Intenta de nuevo.', 'error');
             btnStart.disabled = false;
+            stopVideoStream();
             return;
         }
 
@@ -163,12 +210,14 @@ async function startRegister() {
         } else {
             showStatus('status-register', `❌ ${result.error}`, 'error');
             btnStart.disabled = false;
+            stopVideoStream();
         }
 
     } catch (error) {
         console.error('Error en registro:', error);
         showStatus('status-register', '❌ Error al registrar usuario', 'error');
         btnStart.disabled = false;
+        stopVideoStream();
     }
 }
 
@@ -180,6 +229,10 @@ async function startLogin() {
 
     btnStart.disabled = true;
     clearStatus('status-login');
+
+    // Limpiar canvas antes de empezar
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Obtener usuarios registrados
     showStatus('status-login', '📊 Cargando datos de usuarios...', 'info');
@@ -225,6 +278,7 @@ async function startLogin() {
         if (!detection) {
             showStatus('status-login', '❌ No se detectó ningún rostro. Intenta de nuevo.', 'error');
             btnStart.disabled = false;
+            stopVideoStream();
             return;
         }
 
@@ -267,12 +321,14 @@ async function startLogin() {
             faceDetectionService.drawDetection(canvas, detection, 'Desconocido');
             showStatus('status-login', '❌ Rostro no reconocido. Acceso denegado.', 'error');
             btnStart.disabled = false;
+            stopVideoStream();
         }
 
     } catch (error) {
         console.error('Error en login:', error);
         showStatus('status-login', '❌ Error al procesar reconocimiento', 'error');
         btnStart.disabled = false;
+        stopVideoStream();
     }
 }
 
