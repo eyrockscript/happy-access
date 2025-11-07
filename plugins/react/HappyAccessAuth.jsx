@@ -2,6 +2,20 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 
 /**
+ * Genera un hash criptográfico SHA-256 del descriptor facial
+ * Este hash puede ser usado como identificador único del rostro
+ */
+async function generateFaceHash(descriptor) {
+    const descriptorString = JSON.stringify(Array.from(descriptor));
+    const encoder = new TextEncoder();
+    const data = encoder.encode(descriptorString);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+/**
  * HappyAccessAuth - Componente de autenticación facial con sonrisa para React 18+
  *
  * @param {Object} props
@@ -201,10 +215,18 @@ const HappyAccessAuth = ({
             const result = await response.json();
 
             if (response.ok) {
+                // Generar hash criptográfico
+                const faceHash = await generateFaceHash(detection.descriptor);
+
                 setStatus({ message: result.message, type: 'success' });
                 setUsername('');
                 stopVideo();
-                onSuccess?.({ username: username.trim(), mode: 'register' });
+                onSuccess?.({
+                    username: username.trim(),
+                    mode: 'register',
+                    faceHash: faceHash,
+                    timestamp: new Date().toISOString()
+                });
             } else {
                 setStatus({ message: result.error, type: 'error' });
                 onError?.({ error: 'REGISTRATION_ERROR', details: result });
@@ -279,9 +301,18 @@ const HappyAccessAuth = ({
             }
 
             if (bestMatch) {
+                // Generar hash criptográfico
+                const faceHash = await generateFaceHash(detection.descriptor);
+
                 setStatus({ message: `¡Bienvenido, ${bestMatch.username}!`, type: 'success' });
                 stopVideo();
-                onSuccess?.({ username: bestMatch.username, mode: 'login', confidence: 1 - bestDistance });
+                onSuccess?.({
+                    username: bestMatch.username,
+                    mode: 'login',
+                    confidence: 1 - bestDistance,
+                    faceHash: faceHash,
+                    timestamp: new Date().toISOString()
+                });
             } else {
                 setStatus({ message: 'Rostro no reconocido', type: 'error' });
                 onError?.({ error: 'FACE_NOT_RECOGNIZED' });

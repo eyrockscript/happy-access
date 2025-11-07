@@ -99,18 +99,59 @@ npm run dev
 
 ## 📖 Uso de Plugins
 
+### Respuesta del Plugin
+
+Todos los plugins retornan un objeto con la siguiente estructura al hacer login/registro exitoso:
+
+```javascript
+{
+  username: "juan",              // Nombre de usuario
+  mode: "login",                 // "login" o "register"
+  confidence: 0.8542,            // Solo en login: nivel de confianza (0-1)
+  faceHash: "a3f2e1d4b5c6...",  // Hash SHA-256 del rostro (64 caracteres hex)
+  timestamp: "2025-11-07T10:30:00.000Z"
+}
+```
+
+### 🔑 Identificador Criptográfico (faceHash)
+
+El `faceHash` es un identificador único generado mediante SHA-256 del descriptor facial. Este hash:
+
+- ✅ **Es único** por rostro (mismo rostro = mismo hash)
+- ✅ **No es reversible** (no se puede obtener el rostro del hash)
+- ✅ **Es consistente** (mismo rostro genera mismo hash)
+- ✅ **Fácil de guardar** (solo 64 caracteres hexadecimales)
+
+**Casos de uso:**
+- Guardar en base de datos para registro de accesos
+- Verificar identidad sin almacenar descriptores faciales completos
+- Auditoría y logs de seguridad
+- Sistemas de control de asistencia
+
 #### React
 
 ```jsx
 import HappyAccessAuth from './plugins/react/HappyAccessAuth';
 
 function App() {
+  const handleSuccess = (data) => {
+    console.log('Acceso concedido:', data);
+
+    // Guardar hash en base de datos
+    await fetch('/api/log-access', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: data.username,
+        faceHash: data.faceHash,  // Identificador criptográfico
+        timestamp: data.timestamp
+      })
+    });
+  };
+
   return (
     <HappyAccessAuth
-      apiEndpoint="http://localhost:3000/api"
       mode="login"
-      onSuccess={(data) => console.log('¡Acceso concedido!', data)}
-      smileThreshold={0.7}
+      onSuccess={handleSuccess}
     />
   );
 }
@@ -121,7 +162,6 @@ function App() {
 ```vue
 <template>
   <HappyAccessAuth
-    api-endpoint="http://localhost:3000/api"
     mode="login"
     @success="handleSuccess"
   />
@@ -129,6 +169,14 @@ function App() {
 
 <script setup>
 import HappyAccessAuth from './plugins/vue/HappyAccessAuth.vue';
+
+const handleSuccess = async (data) => {
+  // data.faceHash contiene el identificador criptográfico
+  console.log('Hash del rostro:', data.faceHash);
+
+  // Guardar en tu sistema
+  await saveAccess(data);
+};
 </script>
 ```
 
@@ -137,12 +185,21 @@ import HappyAccessAuth from './plugins/vue/HappyAccessAuth.vue';
 ```svelte
 <script>
   import HappyAccessAuth from './plugins/svelte/HappyAccessAuth.svelte';
+
+  function handleSuccess(event) {
+    const data = event.detail;
+
+    // Acceder al hash criptográfico
+    console.log('Face Hash:', data.faceHash);
+
+    // Usar para verificación posterior
+    verifyAccess(data.username, data.faceHash);
+  }
 </script>
 
 <HappyAccessAuth
-  apiEndpoint="http://localhost:3000/api"
   mode="login"
-  on:success={(e) => console.log(e.detail)}
+  on:success={handleSuccess}
 />
 ```
 

@@ -2,6 +2,36 @@
 
 let currentUser = null;
 let videoStream = null;
+let currentResponse = null; // Guardar respuesta completa del plugin
+
+// Función para generar hash criptográfico SHA-256
+async function generateFaceHash(descriptor) {
+    // Convertir descriptor a string JSON
+    const descriptorString = JSON.stringify(Array.from(descriptor));
+
+    // Convertir a ArrayBuffer
+    const encoder = new TextEncoder();
+    const data = encoder.encode(descriptorString);
+
+    // Generar hash SHA-256
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+    // Convertir a hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    return hashHex;
+}
+
+// Función para formatear JSON con colores
+function formatJSON(obj) {
+    return JSON.stringify(obj, null, 2)
+        .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+        .replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>')
+        .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+        .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
+        .replace(/: null/g, ': <span class="json-null">null</span>');
+}
 
 // Inicialización
 window.addEventListener('DOMContentLoaded', async () => {
@@ -349,7 +379,24 @@ async function startLogin() {
             faceDetectionService.drawDetection(canvas, detection, match.username);
             showStatus('status-login', `✅ Bienvenido, ${match.username}!`, 'success');
 
-            currentUser = match;
+            // Generar hash criptográfico
+            const faceHash = await generateFaceHash(detection.descriptor);
+
+            // Preparar respuesta completa del plugin
+            currentResponse = {
+                success: true,
+                username: match.username,
+                confidence: (1 - match.distance).toFixed(4),
+                faceHash: faceHash,
+                timestamp: new Date().toISOString(),
+                mode: 'login'
+            };
+
+            currentUser = {
+                ...match,
+                faceHash: faceHash,
+                confidence: (1 - match.distance).toFixed(4)
+            };
 
             // Registrar acceso
             await fetch('/api/access-log', {
@@ -359,7 +406,8 @@ async function startLogin() {
                 },
                 body: JSON.stringify({
                     username: match.username,
-                    action: 'LOGIN'
+                    action: 'LOGIN',
+                    faceHash: faceHash
                 })
             });
 
@@ -395,6 +443,18 @@ function showDashboard() {
     const now = new Date();
     document.getElementById('stat-time').textContent = now.toLocaleTimeString('es-ES');
 
+    // Mostrar hash criptográfico (solo primeros 16 caracteres para UI)
+    const hashDisplay = currentUser.faceHash ?
+        currentUser.faceHash.substring(0, 16) + '...' :
+        'N/A';
+    document.getElementById('stat-hash').textContent = hashDisplay;
+
+    // Mostrar JSON completo
+    if (currentResponse) {
+        const jsonDisplay = document.getElementById('json-display');
+        jsonDisplay.innerHTML = formatJSON(currentResponse);
+    }
+
     showScreen('dashboard-screen');
 }
 
@@ -414,5 +474,6 @@ async function logout() {
     }
 
     currentUser = null;
+    currentResponse = null;
     showScreen('home-screen');
 }

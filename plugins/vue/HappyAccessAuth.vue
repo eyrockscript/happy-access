@@ -64,6 +64,20 @@ import { ref, onMounted, onUnmounted, defineProps, defineEmits } from 'vue';
 import * as faceapi from 'face-api.js';
 
 /**
+ * Genera un hash criptográfico SHA-256 del descriptor facial
+ * Este hash puede ser usado como identificador único del rostro
+ */
+async function generateFaceHash(descriptor) {
+  const descriptorString = JSON.stringify(Array.from(descriptor));
+  const encoder = new TextEncoder();
+  const data = encoder.encode(descriptorString);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+/**
  * HappyAccessAuth - Componente de autenticación facial con sonrisa para Vue 3+
  * Valores configurables por variables de ambiente: VITE_API_ENDPOINT, VITE_SMILE_THRESHOLD,
  * VITE_MATCH_THRESHOLD, VITE_MODELS_PATH
@@ -282,10 +296,19 @@ const handleRegister = async () => {
     const result = await response.json();
 
     if (response.ok) {
+      // Generar hash criptográfico
+      const faceHash = await generateFaceHash(detection.descriptor);
+
       status.value = { message: result.message, type: 'success' };
+      const registeredUsername = username.value.trim();
       username.value = '';
       stopVideo();
-      emit('success', { username: username.value.trim(), mode: 'register' });
+      emit('success', {
+        username: registeredUsername,
+        mode: 'register',
+        faceHash: faceHash,
+        timestamp: new Date().toISOString()
+      });
     } else {
       status.value = { message: result.error, type: 'error' };
       emit('error', { error: 'REGISTRATION_ERROR', details: result });
@@ -359,9 +382,18 @@ const handleLogin = async () => {
     }
 
     if (bestMatch) {
+      // Generar hash criptográfico
+      const faceHash = await generateFaceHash(detection.descriptor);
+
       status.value = { message: `¡Bienvenido, ${bestMatch.username}!`, type: 'success' };
       stopVideo();
-      emit('success', { username: bestMatch.username, mode: 'login', confidence: 1 - bestDistance });
+      emit('success', {
+        username: bestMatch.username,
+        mode: 'login',
+        confidence: 1 - bestDistance,
+        faceHash: faceHash,
+        timestamp: new Date().toISOString()
+      });
     } else {
       status.value = { message: 'Rostro no reconocido', type: 'error' };
       emit('error', { error: 'FACE_NOT_RECOGNIZED' });
