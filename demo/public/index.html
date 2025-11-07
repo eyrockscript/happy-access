@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Access - Reconocimiento Facial</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Happy Access</h1>
+            <p class="subtitle">Sistema de Autenticación por Reconocimiento Facial</p>
+        </header>
+
+        <!-- Pantalla de inicio -->
+        <div id="home-screen" class="screen active">
+            <div class="welcome-box">
+                <h2>Bienvenido</h2>
+                <p>Accede de forma segura usando reconocimiento facial</p>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showScreen('login-screen')">
+                        🔓 Iniciar Sesión
+                    </button>
+                    <button class="btn btn-secondary" onclick="showScreen('register-screen')">
+                        📝 Registrarse
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de registro -->
+        <div id="register-screen" class="screen">
+            <button class="btn-back" onclick="showScreen('home-screen')">← Volver</button>
+
+            <h2>Registro de Usuario</h2>
+            <p class="info-text">Ingresa tu nombre y captura tu rostro para registrarte</p>
+
+            <div class="form-group">
+                <input type="text" id="username-register" placeholder="Nombre de usuario" class="input-field">
+            </div>
+
+            <div class="video-container">
+                <video id="video-register" autoplay muted playsinline></video>
+                <canvas id="overlay-register"></canvas>
+            </div>
+
+            <div id="status-register" class="status-message"></div>
+
+            <div class="button-group">
+                <button id="btn-start-register" class="btn btn-primary" onclick="startRegister()">
+                    📸 Capturar Rostro
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla de login -->
+        <div id="login-screen" class="screen">
+            <button class="btn-back" onclick="showScreen('home-screen')">← Volver</button>
+
+            <h2>Iniciar Sesión</h2>
+            <p class="info-text">Mira a la cámara para autenticarte</p>
+
+            <div class="video-container">
+                <video id="video-login" autoplay muted playsinline></video>
+                <canvas id="overlay-login"></canvas>
+            </div>
+
+            <div id="status-login" class="status-message"></div>
+
+            <div class="button-group">
+                <button id="btn-start-login" class="btn btn-primary" onclick="startLogin()">
+                    🔍 Reconocer Rostro
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla de dashboard -->
+        <div id="dashboard-screen" class="screen">
+            <div class="dashboard-box">
+                <h2>✅ Acceso Concedido</h2>
+                <div id="user-info" class="user-info"></div>
+                <p class="success-text">Has iniciado sesión exitosamente</p>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <span class="stat-icon">👤</span>
+                        <span class="stat-label">Usuario</span>
+                        <span id="stat-username" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🕐</span>
+                        <span class="stat-label">Hora de acceso</span>
+                        <span id="stat-time" class="stat-value">-</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" onclick="logout()">
+                    🚪 Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando modelos de IA...</p>
+    </div>
+
+    <script src="/js/faceDetection.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

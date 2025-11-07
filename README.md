@@ -51,50 +51,59 @@ Cada ejemplo incluye navegación, manejo de estado, UI completa y está listo pa
 - Cámara web
 - Buena iluminación para mejor detección
 
-## 🚀 Instalación
+## 🚀 Inicio Rápido
 
-1. Clona el repositorio:
+### Opción 1: Probar el Demo 🎬
+
 ```bash
+# Clona el repositorio
 git clone https://github.com/eyrockscript/happy-access.git
 cd happy-access
+
+# Inicia el demo
+npm run demo
 ```
 
-2. Instala las dependencias:
+Abre http://localhost:3000
+
+### Opción 2: Usar Plugins en tu Proyecto 🔌
+
+Los plugins están en `./plugins/` y son **solo frontend** (sin backend incluido).
+
+1. Copia el componente a tu proyecto:
+   - React: `./plugins/react/HappyAccessAuth.jsx`
+   - Vue: `./plugins/vue/HappyAccessAuth.vue`
+   - Svelte: `./plugins/svelte/HappyAccessAuth.svelte`
+
+2. Implementa el backend (ver [API Documentation](#-api-endpoints))
+
+3. Úsalo en tu app (ver ejemplos abajo)
+
+### Opción 3: Usar un Ejemplo Completo 📦
+
+Los ejemplos incluyen **todo** (frontend + backend):
+
 ```bash
+# React Example
+cd examples/react-example
 npm install
+npm start        # Terminal 1: Backend
+npm run dev      # Terminal 2: Frontend
+
+# Vue Example
+cd examples/vue-example
+npm install
+npm start        # Terminal 1: Backend
+npm run dev      # Terminal 2: Frontend
+
+# Svelte Example
+cd examples/svelte-example
+npm install
+npm start        # Terminal 1: Backend
+npm run dev      # Terminal 2: Frontend
 ```
 
-3. Inicia el servidor:
-```bash
-npm start
-```
-
-4. Abre tu navegador en:
-```
-http://localhost:3000
-```
-
-## 📖 Uso
-
-### Aplicación Web Standalone
-
-#### Registro de Usuario
-
-1. Haz clic en "Registrarse"
-2. Ingresa tu nombre de usuario
-3. Haz clic en "Capturar Rostro"
-4. Permite el acceso a la cámara
-5. **Sonríe ampliamente** (se mostrará un indicador de nivel de sonrisa)
-6. El sistema capturará tu rostro automáticamente cuando detecte una sonrisa
-
-#### Iniciar Sesión
-
-1. Haz clic en "Iniciar Sesión"
-2. Haz clic en "Reconocer Rostro"
-3. **Sonríe para la cámara**
-4. El sistema te reconocerá y te dará acceso
-
-### Uso como Plugin/Componente
+## 📖 Uso de Plugins
 
 #### React
 
@@ -149,36 +158,54 @@ import HappyAccessAuth from './plugins/vue/HappyAccessAuth.vue';
 
 ```
 happy-access/
-├── public/
-│   ├── css/
-│   │   └── styles.css              # Estilos de la aplicación
-│   ├── js/
-│   │   ├── app.js                  # Lógica principal
-│   │   └── faceDetection.js        # Servicio de detección facial
-│   └── index.html                  # Interfaz principal
-├── plugins/
+├── plugins/                        # 🔌 SOLO componentes (sin backend)
 │   ├── react/
-│   │   ├── HappyAccessAuth.jsx     # Componente React
+│   │   ├── HappyAccessAuth.jsx    # Componente React 18+
 │   │   ├── package.json
 │   │   └── README.md
 │   ├── vue/
-│   │   ├── HappyAccessAuth.vue     # Componente Vue
+│   │   ├── HappyAccessAuth.vue    # Componente Vue 3+
 │   │   ├── package.json
 │   │   └── README.md
 │   ├── svelte/
-│   │   ├── HappyAccessAuth.svelte  # Componente Svelte
+│   │   ├── HappyAccessAuth.svelte # Componente Svelte 4+
 │   │   ├── package.json
 │   │   └── README.md
-│   └── README.md                   # Documentación de plugins
-├── examples/
-│   ├── react-example/              # Proyecto completo React
-│   ├── vue-example/                # Proyecto completo Vue
-│   ├── svelte-example/             # Proyecto completo Svelte
-│   └── README.md                   # Documentación de ejemplos
-├── server.js                       # Servidor Express + API
-├── package.json
-└── README.md
+│   └── README.md                  # Guía de plugins
+│
+├── examples/                       # 📦 Proyectos completos (frontend + backend)
+│   ├── react-example/             # App React autónoma
+│   │   ├── server.js              # Backend incluido
+│   │   ├── src/                   # Frontend React
+│   │   └── package.json
+│   ├── vue-example/               # App Vue autónoma
+│   │   ├── server.js              # Backend incluido
+│   │   ├── src/                   # Frontend Vue
+│   │   └── package.json
+│   ├── svelte-example/            # App Svelte autónoma
+│   │   ├── server.js              # Backend incluido
+│   │   ├── src/                   # Frontend Svelte
+│   │   └── package.json
+│   └── README.md                  # Guía de ejemplos
+│
+├── demo/                           # 🎬 Aplicación de demostración
+│   ├── server.js                  # Servidor Express
+│   ├── public/                    # App standalone HTML/CSS/JS
+│   ├── package.json
+│   └── README.md
+│
+├── package.json                    # Config raíz (solo para demo)
+└── README.md                       # Este archivo
 ```
+
+### 🗂️ ¿Qué usar según tu necesidad?
+
+| Necesidad | Usa | Ubicación |
+|-----------|-----|-----------|
+| **Solo quiero probarlo** | Demo | `./demo/` |
+| **Integrar en mi proyecto existente** | Plugins | `./plugins/` |
+| **Ver código de ejemplo completo** | Examples | `./examples/` |
+| **Aprender cómo funciona** | Examples o Demo | `./examples/` o `./demo/` |
 
 ## 🔧 Cómo Funciona
 

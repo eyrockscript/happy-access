@@ -3,3 +3,26 @@ node_modules/
 .DS_Store
 *.log
 users_data.json
+
+# Demo app data
+demo/users_data.json
+demo/node_modules/
+
+# Examples data
+examples/*/users_data.json
+examples/*/node_modules/
+examples/*/dist/
+examples/*/.vite/
+
+# Build outputs
+dist/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db

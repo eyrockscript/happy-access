@@ -1,31 +1,32 @@
 {
   "name": "happy-access",
-  "version": "1.0.0",
-  "description": "An expermiental use of Face Detection bringing access or login",
-  "main": "server.js",
+  "version": "2.0.0",
+  "description": "Sistema de autenticación facial con detección de sonrisa - Plugins y Ejemplos",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "demo": "cd demo && npm install && npm start",
+    "test": "echo \"No tests specified\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/eyrockscript/happy-access.git"
   },
   "keywords": [
-    "face",
-    "recognition",
-    "ai",
-    "access",
-    "login"
+    "face-recognition",
+    "authentication",
+    "smile-detection",
+    "biometric",
+    "react",
+    "vue",
+    "svelte",
+    "face-api",
+    "plugin",
+    "component"
   ],
   "author": "eyrockscript",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/eyrockscript/happy-access/issues"
   },
-  "homepage": "https://github.com/eyrockscript/happy-access#readme",
-  "dependencies": {
-    "express": "^4.18.2"
-  }
+  "homepage": "https://github.com/eyrockscript/happy-access#readme"
 }

@@ -1,14 +1,14 @@
 # ⚠️ IMPORTANTE: Instrucciones de Inicio
 
-Este ejemplo **requiere** que el servidor backend esté corriendo primero.
+Este ejemplo es **AUTÓNOMO** e incluye su propio backend.
 
-## 🚀 Pasos para ejecutar (en orden):
+## 🚀 Pasos para ejecutar (simplificado):
 
-### Paso 1: Inicia el Backend (Terminal 1)
+### Opción 1: Dos Terminales (Recomendado)
 
+**Terminal 1 - Backend:**
 ```bash
-# Desde la RAÍZ del proyecto (happy-access/), NO desde examples/
-cd ../..     # Si estás en examples/svelte-example
+# Desde examples/svelte-example/
 npm install
 npm start
 ```
@@ -19,85 +19,94 @@ npm start
 📸 Sistema de reconocimiento facial activo
 ```
 
-### Paso 2: Inicia este Ejemplo Svelte (Terminal 2)
-
+**Terminal 2 - Frontend:**
 ```bash
 # Desde examples/svelte-example/
-npm install
 npm run dev
 ```
 
 ✅ Deberías ver:
 ```
-VITE ready in XXX ms
 Local: http://localhost:5175
 ```
 
-### Paso 3: Abre el Navegador
+### Opción 2: Una Terminal (Más Simple)
 
-Abre http://localhost:5175
+Si solo quieres probar rápido:
+
+```bash
+# Terminal 1 - Backend
+npm install
+npm start &  # El & lo ejecuta en segundo plano
+
+# Terminal 1 - Frontend (en la misma terminal)
+npm run dev
+```
+
+**Abre:** http://localhost:5175
 
 ---
+
+## ✅ Ventajas de Esta Estructura
+
+- ✅ Todo está en un solo lugar
+- ✅ No necesitas ir a la raíz del proyecto
+- ✅ Incluye su propio servidor
+- ✅ Fácil de copiar y usar en tus proyectos
+
+## 📂 Lo que incluye
+
+```
+svelte-example/
+├── server.js              # Backend API (puerto 3000)
+├── src/
+│   ├── App.svelte           # App Svelte (puerto 5175)
+│   └── components/
+│       └── HappyAccessAuth.jsx  # Componente
+├── package.json          # Incluye Express + Svelte
+└── README.md            # Documentación completa
+```
 
 ## ❌ Errores Comunes
 
-### "npm start no funciona"
-
-**Causa:** Estás ejecutando `npm start` desde la carpeta del ejemplo.
+### "Cannot find module 'express'"
 
 **Solución:**
 ```bash
-# Sal de la carpeta del ejemplo
-cd ../..
-
-# Ahora ejecuta npm start
-npm start
+npm install
 ```
 
-### "Error de red / servidor no responde"
+### El servidor no responde
 
 **Causa:** El backend no está corriendo.
 
-**Solución:**
-1. Abre una terminal separada
-2. Ve a la raíz del proyecto: `cd path/to/happy-access`
-3. Ejecuta: `npm start`
-4. Espera a ver el mensaje de confirmación
-5. Regresa a tu ejemplo y recarga la página
+**Solución:** Abre otra terminal y ejecuta `npm start`
 
-### "Cannot find module 'express'"
+### Puerto 3000 ya en uso
 
-**Causa:** No has instalado las dependencias del backend.
+Otro servidor está usando el puerto 3000.
 
 **Solución:**
 ```bash
-cd ../..
-npm install
-npm start
+# Ver qué está usando el puerto
+lsof -ti:3000
+# Matarlo
+kill -9 $(lsof -ti:3000)
+# O usar otro puerto
+PORT=3001 npm start
 ```
 
 ---
 
-## 📂 Estructura de Carpetas (para referencia)
+## 🔌 ¿Quieres solo el componente?
+
+Si solo necesitas el componente de Svelte sin el servidor, ve a:
 
 ```
-happy-access/                    ← AQUÍ ejecutas "npm start"
-├── server.js
-├── package.json
-└── examples/
-    └── svelte-example/         ← AQUÍ ejecutas "npm run dev"
-        ├── src/
-        └── package.json
+../../plugins/react/HappyAccessAuth.jsx
 ```
 
----
+## 📚 Más Info
 
-## ✅ Checklist Rápido
-
-Antes de reportar un problema, verifica:
-
-- [ ] El backend está corriendo en otra terminal
-- [ ] Ves el mensaje "🚀 Servidor corriendo en http://localhost:3000"
-- [ ] Ejecutaste `npm install` en la raíz Y en examples/svelte-example
-- [ ] Estás usando el puerto correcto (5175 para Svelte)
-- [ ] No hay otro proceso usando el puerto 3000 o 5175
+- [README Completo](./README.md)
+- [Documentación de Plugins](../../plugins/README.md)
