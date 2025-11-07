@@ -24,6 +24,18 @@ Este proyecto incluye componentes listos para usar en:
 
 [📚 Ver documentación de plugins](./plugins/README.md)
 
+## 🎯 Ejemplos de Implementación
+
+¿Quieres ver cómo integrar Happy Access en tu proyecto? Tenemos proyectos de ejemplo completos:
+
+- **React Example** → `./examples/react-example/` - Aplicación completa con Vite + React 18
+- **Vue Example** → `./examples/vue-example/` - Aplicación completa con Vite + Vue 3
+- **Svelte Example** → `./examples/svelte-example/` - Aplicación completa con Vite + Svelte 4
+
+Cada ejemplo incluye navegación, manejo de estado, UI completa y está listo para ejecutar.
+
+[🚀 Ver ejemplos completos](./examples/README.md)
+
 ## 💻 Tecnologías
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
@@ -158,6 +170,11 @@ happy-access/
 │   │   ├── package.json
 │   │   └── README.md
 │   └── README.md                   # Documentación de plugins
+├── examples/
+│   ├── react-example/              # Proyecto completo React
+│   ├── vue-example/                # Proyecto completo Vue
+│   ├── svelte-example/             # Proyecto completo Svelte
+│   └── README.md                   # Documentación de ejemplos
 ├── server.js                       # Servidor Express + API
 ├── package.json
 └── README.md
