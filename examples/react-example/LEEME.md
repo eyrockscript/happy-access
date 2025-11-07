@@ -1,16 +1,15 @@
 # ⚠️ IMPORTANTE: Instrucciones de Inicio
 
-Este ejemplo es **AUTÓNOMO** e incluye su propio backend.
+Este ejemplo es **solo frontend** y requiere el backend de demo corriendo.
 
-## 🚀 Pasos para ejecutar (simplificado):
+## 🚀 Pasos para ejecutar:
 
-### Opción 1: Dos Terminales (Recomendado)
+### Dos Terminales (Requerido)
 
-**Terminal 1 - Backend:**
+**Terminal 1 - Backend (desde raíz del proyecto):**
 ```bash
-# Desde examples/react-example/
-npm install
-npm start
+# Desde happy-access/ (raíz)
+npm run demo
 ```
 
 ✅ Deberías ver:
@@ -19,9 +18,10 @@ npm start
 📸 Sistema de reconocimiento facial activo
 ```
 
-**Terminal 2 - Frontend:**
+**Terminal 2 - Frontend (desde este directorio):**
 ```bash
 # Desde examples/react-example/
+npm install
 npm run dev
 ```
 
@@ -30,57 +30,54 @@ npm run dev
 Local: http://localhost:5173
 ```
 
-### Opción 2: Una Terminal (Más Simple)
-
-Si solo quieres probar rápido:
-
-```bash
-# Terminal 1 - Backend
-npm install
-npm start &  # El & lo ejecuta en segundo plano
-
-# Terminal 1 - Frontend (en la misma terminal)
-npm run dev
-```
-
 **Abre:** http://localhost:5173
 
 ---
 
+## ⚙️ Configuración (Opcional)
+
+Este ejemplo usa variables de ambiente. Para personalizarlo:
+
+```bash
+# Copia el archivo de ejemplo
+cp .env.example .env
+
+# Edita .env con tus valores
+```
+
+**Variables disponibles:**
+- `VITE_API_ENDPOINT` - URL del backend (default: http://localhost:3000/api)
+- `VITE_SMILE_THRESHOLD` - Umbral de sonrisa 0-1 (default: 0.7)
+- `VITE_MATCH_THRESHOLD` - Umbral de coincidencia 0-1 (default: 0.6)
+- `VITE_MODELS_PATH` - Ruta de modelos de face-api.js
+
 ## ✅ Ventajas de Esta Estructura
 
-- ✅ Todo está en un solo lugar
-- ✅ No necesitas ir a la raíz del proyecto
-- ✅ Incluye su propio servidor
-- ✅ Fácil de copiar y usar en tus proyectos
+- ✅ Solo frontend, fácil de entender
+- ✅ Usa el plugin directamente desde `./plugins/react/`
+- ✅ Configurable con variables de ambiente
+- ✅ Ejemplo completo de integración
 
 ## 📂 Lo que incluye
 
 ```
 react-example/
-├── server.js              # Backend API (puerto 3000)
+├── .env.example          # Variables de ambiente de ejemplo
 ├── src/
-│   ├── App.jsx           # App React (puerto 5173)
+│   ├── App.jsx          # App React (puerto 5173)
 │   └── components/
-│       └── HappyAccessAuth.jsx  # Componente
-├── package.json          # Incluye Express + React
-└── README.md            # Documentación completa
+│       └── HappyAccessAuth.jsx  # Componente del plugin
+├── package.json         # Dependencias de React
+└── README.md           # Documentación completa
 ```
 
 ## ❌ Errores Comunes
 
-### "Cannot find module 'express'"
-
-**Solución:**
-```bash
-npm install
-```
-
-### El servidor no responde
+### "Error de red. Verifica que el servidor esté corriendo"
 
 **Causa:** El backend no está corriendo.
 
-**Solución:** Abre otra terminal y ejecuta `npm start`
+**Solución:** Abre otra terminal en la raíz y ejecuta `npm run demo`
 
 ### Puerto 3000 ya en uso
 
@@ -92,8 +89,6 @@ Otro servidor está usando el puerto 3000.
 lsof -ti:3000
 # Matarlo
 kill -9 $(lsof -ti:3000)
-# O usar otro puerto
-PORT=3001 npm start
 ```
 
 ---

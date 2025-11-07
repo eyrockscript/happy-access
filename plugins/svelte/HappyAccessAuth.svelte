@@ -4,14 +4,16 @@
 
   /**
    * HappyAccessAuth - Componente de autenticación facial con sonrisa para Svelte 4+
+   * Valores configurables por variables de ambiente: VITE_API_ENDPOINT, VITE_SMILE_THRESHOLD,
+   * VITE_MATCH_THRESHOLD, VITE_MODELS_PATH
    */
 
-  // Props
-  export let apiEndpoint = ''; // URL base del API (requerido)
+  // Props con valores default desde variables de ambiente
+  export let apiEndpoint = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000/api'; // URL base del API
   export let mode = 'login'; // 'login' o 'register'
-  export let smileThreshold = 0.7; // Umbral de sonrisa (0-1)
-  export let matchThreshold = 0.6; // Umbral de coincidencia facial (0-1)
-  export let modelsPath = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model';
+  export let smileThreshold = parseFloat(import.meta.env.VITE_SMILE_THRESHOLD) || 0.7; // Umbral de sonrisa (0-1)
+  export let matchThreshold = parseFloat(import.meta.env.VITE_MATCH_THRESHOLD) || 0.6; // Umbral de coincidencia facial (0-1)
+  export let modelsPath = import.meta.env.VITE_MODELS_PATH || 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model';
   export let className = '';
 
   // Eventos

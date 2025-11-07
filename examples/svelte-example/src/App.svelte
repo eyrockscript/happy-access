@@ -104,10 +104,7 @@
         </p>
 
         <HappyAccessAuth
-          apiEndpoint="http://localhost:3000/api"
           mode="register"
-          smileThreshold={0.7}
-          matchThreshold={0.6}
           on:success={handleSuccess}
           on:error={handleError}
         />
@@ -124,10 +121,7 @@
         </p>
 
         <HappyAccessAuth
-          apiEndpoint="http://localhost:3000/api"
           mode="login"
-          smileThreshold={0.7}
-          matchThreshold={0.6}
           on:success={handleSuccess}
           on:error={handleError}
         />

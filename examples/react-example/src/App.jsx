@@ -112,12 +112,9 @@ function App() {
             </p>
 
             <HappyAccessAuth
-              apiEndpoint="http://localhost:3000/api"
               mode="register"
               onSuccess={handleSuccess}
               onError={handleError}
-              smileThreshold={0.7}
-              matchThreshold={0.6}
             />
           </div>
         )}
@@ -137,12 +134,9 @@ function App() {
             </p>
 
             <HappyAccessAuth
-              apiEndpoint="http://localhost:3000/api"
               mode="login"
               onSuccess={handleSuccess}
               onError={handleError}
-              smileThreshold={0.7}
-              matchThreshold={0.6}
             />
           </div>
         )}

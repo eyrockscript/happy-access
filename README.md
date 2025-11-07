@@ -81,27 +81,21 @@ Los plugins están en `./plugins/` y son **solo frontend** (sin backend incluido
 
 ### Opción 3: Usar un Ejemplo Completo 📦
 
-Los ejemplos incluyen **todo** (frontend + backend):
+Los ejemplos son **solo frontend**. Necesitas el backend del demo corriendo:
 
 ```bash
-# React Example
-cd examples/react-example
-npm install
-npm start        # Terminal 1: Backend
-npm run dev      # Terminal 2: Frontend
+# Terminal 1: Inicia el backend (demo)
+npm run demo
 
-# Vue Example
-cd examples/vue-example
+# Terminal 2: Inicia un ejemplo
+cd examples/react-example    # o vue-example / svelte-example
 npm install
-npm start        # Terminal 1: Backend
-npm run dev      # Terminal 2: Frontend
+npm run dev
 
-# Svelte Example
-cd examples/svelte-example
-npm install
-npm start        # Terminal 1: Backend
-npm run dev      # Terminal 2: Frontend
+# El frontend se conectará automáticamente al backend en http://localhost:3000
 ```
+
+💡 **Tip**: Los ejemplos usan variables de ambiente. Copia `.env.example` a `.env` para personalizar la configuración.
 
 ## 📖 Uso de Plugins
 
@@ -173,17 +167,17 @@ happy-access/
 │   │   └── README.md
 │   └── README.md                  # Guía de plugins
 │
-├── examples/                       # 📦 Proyectos completos (frontend + backend)
-│   ├── react-example/             # App React autónoma
-│   │   ├── server.js              # Backend incluido
+├── examples/                       # 📦 Ejemplos de uso (solo frontend)
+│   ├── react-example/             # Ejemplo React
+│   │   ├── .env.example           # Variables de ambiente de ejemplo
 │   │   ├── src/                   # Frontend React
 │   │   └── package.json
-│   ├── vue-example/               # App Vue autónoma
-│   │   ├── server.js              # Backend incluido
+│   ├── vue-example/               # Ejemplo Vue
+│   │   ├── .env.example           # Variables de ambiente de ejemplo
 │   │   ├── src/                   # Frontend Vue
 │   │   └── package.json
-│   ├── svelte-example/            # App Svelte autónoma
-│   │   ├── server.js              # Backend incluido
+│   ├── svelte-example/            # Ejemplo Svelte
+│   │   ├── .env.example           # Variables de ambiente de ejemplo
 │   │   ├── src/                   # Frontend Svelte
 │   │   └── package.json
 │   └── README.md                  # Guía de ejemplos
@@ -219,32 +213,62 @@ happy-access/
 
 ## ⚙️ Configuración
 
+### Variables de Ambiente (Plugins y Ejemplos)
+
+Los plugins y ejemplos soportan configuración por variables de ambiente:
+
+```bash
+# Copia el archivo de ejemplo
+cp .env.example .env
+
+# Edita .env con tus valores
+```
+
+**Variables disponibles:**
+
+```bash
+# URL del API backend
+VITE_API_ENDPOINT=http://localhost:3000/api
+
+# Umbral de sonrisa (0-1)
+VITE_SMILE_THRESHOLD=0.7
+
+# Umbral de coincidencia facial (0-1)
+VITE_MATCH_THRESHOLD=0.6
+
+# Ruta de modelos de face-api.js
+VITE_MODELS_PATH=https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model
+```
+
 ### Ajustar Umbral de Sonrisa
 
-En `public/js/app.js` o en los props de los componentes:
+```bash
+# Más estricto (necesita sonrisa más amplia)
+VITE_SMILE_THRESHOLD=0.85
 
-```javascript
-// Más estricto (necesita sonrisa más amplia)
-smileThreshold: 0.85
+# Más permisivo
+VITE_SMILE_THRESHOLD=0.6
 
-// Más permisivo
-smileThreshold: 0.6
+# Default
+VITE_SMILE_THRESHOLD=0.7
+```
 
-// Default
-smileThreshold: 0.7
+También puedes pasarlo como prop:
+```jsx
+<HappyAccessAuth smileThreshold={0.7} />
 ```
 
 ### Ajustar Precisión de Reconocimiento
 
-```javascript
-// Más estricto (menor tasa de falsos positivos)
-matchThreshold: 0.4
+```bash
+# Más estricto (menor tasa de falsos positivos)
+VITE_MATCH_THRESHOLD=0.4
 
-// Más permisivo (mayor tolerancia)
-matchThreshold: 0.7
+# Más permisivo (mayor tolerancia)
+VITE_MATCH_THRESHOLD=0.7
 
-// Default (balanceado)
-matchThreshold: 0.6
+# Default (balanceado)
+VITE_MATCH_THRESHOLD=0.6
 ```
 
 ## 🔒 Seguridad

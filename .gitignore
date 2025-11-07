@@ -13,6 +13,7 @@ examples/*/users_data.json
 examples/*/node_modules/
 examples/*/dist/
 examples/*/.vite/
+examples/*/.env
 
 # Build outputs
 dist/

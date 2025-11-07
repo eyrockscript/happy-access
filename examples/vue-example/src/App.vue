@@ -49,10 +49,7 @@
         </p>
 
         <HappyAccessAuth
-          api-endpoint="http://localhost:3000/api"
           mode="register"
-          :smile-threshold="0.7"
-          :match-threshold="0.6"
           @success="handleSuccess"
           @error="handleError"
         />
@@ -68,10 +65,7 @@
         </p>
 
         <HappyAccessAuth
-          api-endpoint="http://localhost:3000/api"
           mode="login"
-          :smile-threshold="0.7"
-          :match-threshold="0.6"
           @success="handleSuccess"
           @error="handleError"
         />

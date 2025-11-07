@@ -65,11 +65,13 @@ import * as faceapi from 'face-api.js';
 
 /**
  * HappyAccessAuth - Componente de autenticación facial con sonrisa para Vue 3+
+ * Valores configurables por variables de ambiente: VITE_API_ENDPOINT, VITE_SMILE_THRESHOLD,
+ * VITE_MATCH_THRESHOLD, VITE_MODELS_PATH
  */
 const props = defineProps({
   apiEndpoint: {
     type: String,
-    required: true,
+    default: import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000/api'
     // URL base del API (ej: 'http://localhost:3000/api')
   },
   mode: {
@@ -79,15 +81,15 @@ const props = defineProps({
   },
   smileThreshold: {
     type: Number,
-    default: 0.7
+    default: parseFloat(import.meta.env.VITE_SMILE_THRESHOLD) || 0.7
   },
   matchThreshold: {
     type: Number,
-    default: 0.6
+    default: parseFloat(import.meta.env.VITE_MATCH_THRESHOLD) || 0.6
   },
   modelsPath: {
     type: String,
-    default: 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model'
+    default: import.meta.env.VITE_MODELS_PATH || 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model'
   },
   className: {
     type: String,

@@ -9,18 +9,18 @@ import * as faceapi from 'face-api.js';
  * @param {Function} props.onSuccess - Callback cuando la autenticación es exitosa
  * @param {Function} props.onError - Callback cuando ocurre un error
  * @param {string} props.mode - Modo: 'register' o 'login'
- * @param {number} props.smileThreshold - Umbral de sonrisa (0-1, default: 0.7)
- * @param {number} props.matchThreshold - Umbral de coincidencia facial (0-1, default: 0.6)
- * @param {string} props.modelsPath - Ruta de los modelos de face-api.js
+ * @param {number} props.smileThreshold - Umbral de sonrisa (0-1, default: 0.7 o VITE_SMILE_THRESHOLD)
+ * @param {number} props.matchThreshold - Umbral de coincidencia facial (0-1, default: 0.6 o VITE_MATCH_THRESHOLD)
+ * @param {string} props.modelsPath - Ruta de los modelos de face-api.js (default: VITE_MODELS_PATH o CDN)
  */
 const HappyAccessAuth = ({
-    apiEndpoint,
+    apiEndpoint = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:3000/api',
     onSuccess,
     onError,
     mode = 'login',
-    smileThreshold = 0.7,
-    matchThreshold = 0.6,
-    modelsPath = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model',
+    smileThreshold = parseFloat(import.meta.env.VITE_SMILE_THRESHOLD) || 0.7,
+    matchThreshold = parseFloat(import.meta.env.VITE_MATCH_THRESHOLD) || 0.6,
+    modelsPath = import.meta.env.VITE_MODELS_PATH || 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model',
     className = ''
 }) => {
     const [modelsLoaded, setModelsLoaded] = useState(false);
