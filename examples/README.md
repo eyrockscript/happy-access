@@ -45,31 +45,83 @@ npm run dev
 
 ## 🚀 Inicio Rápido Global
 
-### Requisito Previo: Servidor Backend
+### ⚠️ MUY IMPORTANTE: Dos Terminales Necesarias
 
-Todos los ejemplos requieren que el servidor backend esté corriendo. Desde la raíz del proyecto:
+Cada ejemplo requiere **DOS TERMINALES** corriendo al mismo tiempo:
+
+1. **Terminal 1**: Backend (servidor API) - desde la **RAÍZ** del proyecto
+2. **Terminal 2**: Frontend (React/Vue/Svelte) - desde la carpeta del **ejemplo**
+
+### Paso a Paso Completo
+
+#### Terminal 1: Inicia el Backend (REQUERIDO)
 
 ```bash
-cd ..
+# Asegúrate de estar en la RAÍZ del proyecto (happy-access/)
+# NO en examples/ ni en examples/react-example/
+
+pwd  # Debe mostrar: /path/to/happy-access
+
 npm install
 npm start
 ```
 
-El servidor estará disponible en `http://localhost:3000`
+✅ **Verifica que veas este mensaje:**
+```
+🚀 Servidor corriendo en http://localhost:3000
+📸 Sistema de reconocimiento facial activo
+```
 
-### Probar un Ejemplo
+🚨 **SI NO VES ESTE MENSAJE**, el ejemplo no funcionará.
+
+#### Terminal 2: Inicia un Ejemplo
+
+Abre una **NUEVA terminal** y:
 
 ```bash
-# 1. Desde la carpeta examples, elige un framework
-cd react-example   # o vue-example, o svelte-example
-
-# 2. Instala dependencias
+# Opción 1: React
+cd examples/react-example
 npm install
-
-# 3. Inicia el servidor de desarrollo
 npm run dev
+# → Abre http://localhost:5173
 
-# 4. Abre en el navegador la URL indicada
+# Opción 2: Vue
+cd examples/vue-example
+npm install
+npm run dev
+# → Abre http://localhost:5174
+
+# Opción 3: Svelte
+cd examples/svelte-example
+npm install
+npm run dev
+# → Abre http://localhost:5175
+```
+
+### ❌ Error Común: "npm start no funciona"
+
+**Problema:** Estás ejecutando `npm start` desde la carpeta del ejemplo.
+
+**Solución:** `npm start` SOLO funciona desde la raíz del proyecto:
+
+```bash
+# ❌ INCORRECTO (estás en examples/react-example/)
+npm start  # No funcionará
+
+# ✅ CORRECTO (ve a la raíz primero)
+cd ../..   # Sube dos niveles
+npm start  # Ahora sí funciona
+```
+
+### 📂 Ubicación de Comandos (Referencia Rápida)
+
+```
+happy-access/                    ← npm start (backend)
+│
+└── examples/
+    ├── react-example/          ← npm run dev (frontend React)
+    ├── vue-example/            ← npm run dev (frontend Vue)
+    └── svelte-example/         ← npm run dev (frontend Svelte)
 ```
 
 ## 📊 Comparación de Implementaciones
